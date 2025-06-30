@@ -1,0 +1,43 @@
+services:
+  rag-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rag-api
+    ports:
+      - "8090:8080"
+    environment:
+      - GOOGLE_API_KEY=AIzaSyD9bGvlnANVKG2u7n8yXS6rx32unIvi4D8
+    volumes:
+      - .:/app
+      - /Users/zhansaya/Desktop/Rag/data:/app/data
+      - /Users/zhansaya/Desktop/Rag/huggingface_cache:/root/.cache/huggingface
+      - /Users/zhansaya/Desktop/Rag/chroma:/app/chroma
+    working_dir: /app
+    command: uvicorn main:app --host 0.0.0.0 --port 8080 --reload
+    networks:
+      - app-network
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    ports:
+      - "8180:8080"
+    environment:
+      - OPENAI_API_KEY=sk-fake-key
+      - OPENAI_API_BASE_URL=http://rag-api:8080/v1
+    volumes:
+      - openwebui_data:/app/backend/data
+    depends_on:
+      rag-api:
+        condition: service_started
+    networks:
+      - app-network
+
+volumes:
+  chroma_data:
+  openwebui_data:
+
+networks:
+  app-network:
+    driver: bridge

@@ -1,0 +1,17 @@
+fastapi
+google-generativeai
+uvicorn
+requests
+python-dotenv
+pydantic
+langchain
+langchain-community
+pdfplumber
+python-docx
+langchain-huggingface==0.0.3
+sentence-transformers
+chromadb==0.4.24
+python-multipart
+python-docx
+
+
